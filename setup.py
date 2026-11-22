@@ -7,7 +7,7 @@ README = (BASE_DIR / "README.md").read_text()
 
 PACKAGE_NAME = "opentele"
 DISTRIBUTION_NAME = "opentele-kugua"
-VERSION = "1.15.1"
+VERSION = "1.15.2"
 SOURCE_DIRECTORY = "src"
 
 with open(BASE_DIR / "requirements.txt") as data:
