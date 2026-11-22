@@ -2,27 +2,28 @@ import pathlib
 from setuptools import setup
 import re
 
-README = (pathlib.Path(__file__).parent / "README.md").read_text()
+BASE_DIR = pathlib.Path(__file__).parent
+README = (BASE_DIR / "README.md").read_text()
 
 PACKAGE_NAME = "opentele"
+DISTRIBUTION_NAME = "opentele-kugua"
 VERSION = "1.15.1"
 SOURCE_DIRECTORY = "src"
 
-with open("requirements.txt") as data:
+with open(BASE_DIR / "requirements.txt") as data:
     requirements = [
         line for line in data.read().split("\n") if line and not line.startswith("#")
     ]
 
 setup(
-    name=PACKAGE_NAME,
+    name=DISTRIBUTION_NAME,
     version=VERSION,
     license="MIT",
     description="A Python Telegram API Library for converting between tdata and telethon sessions, with built-in official Telegram APIs.",
     long_description=README,
     long_description_content_type="text/markdown",
-    url="https://github.com/thedemons/opentele",
-    author="thedemons",
-    author_email="thedemons@gmail.com",
+    url="https://github.com/kugua332334554/opentele",
+    author="kugua332334554",
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Operating System :: Microsoft :: Windows",

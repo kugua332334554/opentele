@@ -40,9 +40,9 @@ sample output = `device_model` / `system_version` / `app_version` / `lang_pack`
 - [pyQt5](https://www.riverbankcomputing.com/software/pyqt/) - Used by Telegram Desktop to streams data from files.
 
 ## Installation
-- Install from [PyPI](https://pypi.org/project/opentele/):
+- Install from [PyPI](https://pypi.org/project/opentele-kugua/):
 ```pip title="pip"
-pip install --upgrade opentele
+pip install --upgrade opentele-kugua
 ```
 
 ## First Run
