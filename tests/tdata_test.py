@@ -81,18 +81,12 @@ def test_random_api():
     for api in apis:
         assert cmp(api, api())
 
-        # not support .Generate() yet
-        if (
-            api != API.TelegramWeb_Z
-            and api != API.TelegramWeb_K
-            and api != API.Webogram
-        ):
-            check = False
+        check = False
 
-            for x in range(10):
-                check |= not cmp(api.Generate(), api.Generate())
+        for x in range(10):
+            check |= not cmp(api.Generate(), api.Generate())
 
-            assert check
+        assert check
 
     assert cmp(
         API.TelegramDesktop.Generate("windows", "opentele"),

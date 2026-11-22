@@ -2,37 +2,36 @@
 
 # opentele
 
-<p align="center">
-<img src="https://raw.githubusercontent.com/thedemons/opentele/main/opentele.png" alt="logo" width="180"/>
-<br><br>
-<a href="https://pypi.org/project/opentele/"><img alt="pypi version" src="https://img.shields.io/pypi/v/opentele?logo=pypi&logoColor=%232d93c1"/></a>
-<a href="https://pypi.org/project/opentele/"><img alt="pypi status" src="https://img.shields.io/pypi/status/opentele?color=%2331c754&logo=pypi&logoColor=%232d93c1"/></a>
-<a href="https://opentele.readthedocs.io/"><img alt="documentation" src="https://img.shields.io/readthedocs/opentele.svg?color=%2331c754&logo=readthedocs"/></a>
-<a href="https://codecov.io/gh/thedemons/opentele">
-<img src="https://img.shields.io/codecov/c/github/thedemons/opentele?color=%2331c754&label=codecov&logo=codecov&token=H2IWGEJ5LN"/>
-</a>
-<a href="https://github.com/thedemons/opentele/actions/workflows/package.yml"><img alt="workflow tests" src="https://img.shields.io/github/workflow/status/thedemons/opentele/package?logo=github&color=%2331c754"/></a>
-<a href="https://github.com/thedemons/opentele/issues"><img alt="issues" src="https://img.shields.io/github/issues/thedemons/opentele?color=%2331c754&logo=github"/></a>
-<a href="https://github.com/thedemons/opentele/commits/main"><img alt="github last commit" src="https://img.shields.io/github/last-commit/thedemons/opentele?color=%2331c754&logo=github"/></a>
-<a href="https://github.com/thedemons/opentele/commits/main"><img alt="github commits" src="https://img.shields.io/github/commit-activity/m/thedemons/opentele?logo=github"/></a>
-<a href="https://pypi.org/project/opentele/"><img alt="pypi installs" src="https://img.shields.io/pypi/dm/opentele?label=installs&logo=docusign&color=%2331c754"/></a>
-<a href="https://en.wikipedia.org/wiki/MIT_License"><img alt="pypi license" src="https://img.shields.io/pypi/l/opentele?color=%2331c754&logo=gitbook&logoColor=white"/></a>
-<a href="https://github.com/psf/black"><img alt="code format" src="https://img.shields.io/badge/code%20style-black-000000.svg?logo=python&logoColor=%232d93c1"/></a>
-</p>
 
-<br>
+A **Python Telegram API Library** for converting between **tdata** and **telethon** sessions, with built-in **official Telegram APIs**.
 
-A **Python Telegram API Library** for converting between **tdata** and **telethon** sessions, with built-in **official Telegram APIs**. [**Read the documentation**](https://opentele.readthedocs.io/en/latest/documentation/telegram-desktop/tdesktop/).
+**FORK BY thedemons/opentele**
 
-# NOTICE
-Unfortunately, due to the lack of interest, I can no longer maintain this project and keep it up-to-date with the latest version of Telegram Desktop and Telethon.
-<br>
-If you have been using opentele for a while, I appreciate it, please consider contributing to the project, ask any questions in [Discussion](https://github.com/thedemons/opentele/discussions) and I'll try to help.
+## random device generation
 
-## Features
-- Convert [Telegram Desktop](https://github.com/telegramdesktop/tdesktop) **tdata** sessions to [telethon](https://github.com/LonamiWebs/Telethon) sessions and vice versa.
-- Use **telethon** with [official APIs](#authorization) to avoid bot detection.
-- Randomize [device info](https://opentele.readthedocs.io/en/latest/documentation/authorization/api/#generate) using real data that recognized by Telegram server.
+generate a random device fingerprint for any supported client. pass `unique_id` to get the same fingerprint every time, omit it to get a new device every call.
+
+```python
+from opentele.api import API
+
+api = API.TelegramIOS.Generate(unique_id="my.session")
+api = API.TelegramAndroid.Generate()
+api = API.TelegramDesktop.Generate("windows", unique_id="my.session")
+api = API.TelegramWeb_K.Generate(unique_id="my.session")
+```
+
+sample output = `device_model` / `system_version` / `app_version` / `lang_pack`
+
+| client | data in | sample output |
+|---|---|---|
+| `API.TelegramIOS` | `unique_id="my.session"` | `iPhone 8` / `14.5.1` / `8.4` / `ios` |
+| `API.TelegramAndroid` | `unique_id="my.session"` | `Huawei LND-AL30` / `SDK 24` / `8.4.1 (2522)` / `android` |
+| `API.TelegramAndroidX` | `unique_id="my.session"` | `Huawei LND-AL30` / `SDK 24` / `8.4.1 (2522)` / `android` |
+| `API.TelegramMacOS` | `unique_id="my.session"` | `MacBook Pro` / `macOS 10.14.5` / `8.4` / `macos` |
+| `API.TelegramDesktop` | `system="windows"` (or `"macos"`, `"linux"`; omit for random), `unique_id="my.session"` | `N68-GS3 UCC` / `Windows 7` / `3.4.3 x64` / `tdesktop` |
+| `API.TelegramWeb_Z` | `unique_id="my.session"` | `Mozilla/5.0 (Macintosh; ...) Safari/605.1.15` / `MacIntel` / `13.0.2 A` / `weba` |
+| `API.TelegramWeb_K` | `unique_id="my.session"` | `Mozilla/5.0 (Macintosh; ...) Safari/605.1.15` / `MacIntel` / `2.3 K` / `webk` |
+| `API.Webogram` | `unique_id="my.session"` | `Mozilla/5.0 (Macintosh; ...) Safari/605.1.15` / `MacIntel` / `0.7.0` / `""` |
 
 ## Dependencies
 
@@ -79,30 +78,3 @@ async def main():
 
 asyncio.run(main())
 ```
-
-## Authorization
-**opentele** offers the ability to use **official APIs**, which are used by official apps. You can check that out [here](https://opentele.readthedocs.io/en/latest/documentation/authorization/api/#class-api).
-<br>
-
-According to [Telegram TOS](https://core.telegram.org/api/obtaining_api_id#using-the-api-id): *all accounts that sign up or log in using unofficial Telegram API clients are automatically put under observation to avoid violations of the Terms of Service*.
-<br>
-<br>
-It also uses the **[lang_pack](https://core.telegram.org/method/initConnection)** parameter, of which [telethon can't use](https://github.com/LonamiWebs/Telethon/blob/dd51aea4db90fd255a14e27192e221c70b45e105/telethon/_client/telegrambaseclient.py#L197) because it's for official apps only.
-<br>
-Therefore, **there are no differences** between using opentele and official apps, the server can't tell you apart.
-
-## Incoming Features
-- [x] Writing data to tdata for converting telethon sessions to tdesktop.
-- [x] Random device information for [initConnection](https://core.telegram.org/method/initConnection) to avoid spam-detection.
-- [ ] Add support for [pyrogram](https://github.com/pyrogram/pyrogram).
-- [ ] Develop opentele-tui using [textual](https://github.com/Textualize/textual) for non-experience user.
-
-## Examples
-The best way to learn anything is by looking at the examples. Am I right?
-
-- Example on [readthedocs](https://opentele.readthedocs.io/en/latest/examples/)
-- Example on [github](./examples)
-
-## Documentation [![documentation](https://readthedocs.org/projects/opentele/badge/?version=latest&style=flat)](https://opentele.readthedocs.io/)
-- Read documentation on [readthedocs](https://opentele.readthedocs.io/en/latest/documentation/telegram-desktop/tdesktop/)
-- Read documentation on [github](https://github.com/thedemons/opentele/tree/main/docs-github)

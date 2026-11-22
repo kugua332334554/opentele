@@ -258,7 +258,7 @@ class APIData(object, metaclass=BaseAPIMetaClass):
                 If not set then the data will be randomized each time we runs it.
         
         ### Raises:
-            `NotImplementedError`: Not supported for web browser yet
+            `NotImplementedError`: The API template has no random device generator
 
         ### Returns:
             `APIData`: Return a copy of the api with random device data
@@ -280,7 +280,13 @@ class APIData(object, metaclass=BaseAPIMetaClass):
         elif cls == API.TelegramMacOS:
             deviceInfo = macOSDevice.RandomDevice(unique_id)
 
-        # elif cls == API.TelegramWeb_K or cls == API.TelegramWeb_Z or cls == API.Webogram:
+        elif (
+            cls == API.TelegramWeb_Z
+            or cls == API.TelegramWeb_K
+            or cls == API.Webogram
+        ):
+            deviceInfo = WebDevice.RandomDevice(unique_id)
+
         else:
             raise NotImplementedError(
                 f"{cls.__name__} device not supported for randomize yet"
@@ -553,21 +559,20 @@ class API(BaseObject):
             api_hash (`str`)         : `"8da85b0d5bfe62527e5b244c209159c3"`
             device_model (`str`)     : `"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36"`
             system_version (`str`)   : `"Windows"`
-            app_version (`str`)      : `"1.28.3 Z"`
+            app_version (`str`)      : `"13.0.2 A"`
             lang_code (`str`)        : `"en"`
             system_lang_code (`str`) : `"en-US"`
-            lang_pack (`str`)        : `""`
+            lang_pack (`str`)        : `"weba"`
         """
 
         api_id = 2496
         api_hash = "8da85b0d5bfe62527e5b244c209159c3"
         device_model = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36"
         system_version = "Windows"
-        app_version = "1.28.3 Z"
+        app_version = "13.0.2 A"
         lang_code = "en"
         system_lang_code = "en-US"
-        lang_pack = ""  # I don"t understand why Telegram Z doesn"t use langPack
-        # You can read its source here: https://github.com/Ajaxy/telegram-tt/blob/f7bc473d51c0fe3a3e8b22678b62d2360225aa7c/src/lib/gramjs/client/TelegramClient.js#L131
+        lang_pack = "weba"
 
     class TelegramWeb_K(APIData):
         """
@@ -579,20 +584,20 @@ class API(BaseObject):
             api_hash (`str`)         : `"8da85b0d5bfe62527e5b244c209159c3"`
             device_model (`str`)     : `"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36"`
             system_version (`str`)   : `"Win32"`
-            app_version (`str`)      : `"1.0.1 K"`
+            app_version (`str`)      : `"2.3 K"`
             lang_code (`str`)        : `"en"`
             system_lang_code (`str`) : `"en-US"`
-            lang_pack (`str`)        : `"macos"`
+            lang_pack (`str`)        : `"webk"`
         """
 
         api_id = 2496
         api_hash = "8da85b0d5bfe62527e5b244c209159c3"
         device_model = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36"
         system_version = "Win32"
-        app_version = "1.0.1 K"
+        app_version = "2.3 K"
         lang_code = "en"
         system_lang_code = "en-US"
-        lang_pack = "macos"  # I"m totally confused, why macos? https://github.dev/morethanwords/tweb/blob/26582590e647766f5890c79e1611c54c1e6e800c/src/config/app.ts#L23
+        lang_pack = "webk"
 
     class Webogram(APIData):
         """
@@ -617,7 +622,7 @@ class API(BaseObject):
         app_version = "0.7.0"
         lang_code = "en"
         system_lang_code = "en-US"
-        lang_pack = ""  # The same problem as TelegramWeb_K, as TelegramWeb_K was built on Webogram
+        lang_pack = ""
 
 
 class LoginFlag(int):

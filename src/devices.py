@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import List, Dict, Tuple, TypeVar, Type
 from .utils import *
-import hashlib, os
+import hashlib, itertools, os
 
 _T = TypeVar("_T")
 
@@ -6106,3 +6106,213 @@ class iOSDeivce(SystemInfo):
                                     )
 
             cls.deviceList = results
+
+
+class WebDevice(SystemInfo):
+    chrome_versions = [
+        "159.0.8154.13",
+        "158.0.8127.37",
+        "157.0.8103.81",
+        "156.0.8078.82",
+        "155.0.8059.86",
+        "154.0.8037.100",
+        "153.0.8010.55",
+        "152.0.7977.85",
+        "151.0.7922.176",
+        "150.0.7871.189",
+        "149.0.7827.201",
+        "148.0.7778.218",
+        "147.0.7727.139",
+        "146.0.7680.180",
+    ]
+    edge_versions = [
+        "158.0.4370.33",
+        "157.0.4341.60",
+        "156.0.4314.42",
+        "155.0.4283.45",
+        "154.0.4258.37",
+        "153.0.4234.32",
+        "152.0.4191.53",
+        "151.0.4129.59",
+        "150.0.4078.48",
+        "149.0.4022.52",
+        "148.0.3967.54",
+        "147.0.3912.60",
+        "146.0.3856.59",
+        "145.0.3800.58",
+        "144.0.3719.82",
+    ]
+    firefox_versions = [f"{major}.0" for major in range(150, 161)]
+    safari_versions = ["26.6", "27.0", "27.1", "27.2"]
+    ios_chrome_versions = ["156.0.8078.54", "158.0.8127.35"]
+
+    chrome_ua_versions = [
+        f"{version.split('.')[0]}.0.0.0" for version in chrome_versions
+    ]
+    edge_ua_versions = [f"{version.split('.')[0]}.0.0.0" for version in edge_versions]
+
+    android_devices = [
+        ("13", "SM-S911B"),
+        ("14", "SM-S911B"),
+        ("14", "Pixel 8"),
+        ("15", "Pixel 8"),
+        ("15", "Pixel 9"),
+        ("15", "SM-S931B"),
+        ("16", "Pixel 9"),
+        ("16", "Pixel 10"),
+        ("16", "SM-S931B"),
+        ("17", "Pixel 10"),
+        ("17", "Pixel 11"),
+    ]
+
+    android_chrome_versions = chrome_ua_versions[:4]
+    android_firefox_versions = firefox_versions[:3]
+
+    ios_versions = [
+        ("26_6", "26.6"),
+        ("27_0", "27.0"),
+        ("27_1", "27.1"),
+        ("27_2", "27.2"),
+        ("27_2_1", "27.2"),
+    ]
+
+    windows_chrome = (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/{chrome} Safari/537.36"
+    )
+    windows_edge = (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/{edge} Safari/537.36 Edg/{edge}"
+    )
+    windows_firefox = (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:{firefox}) "
+        "Gecko/20100101 Firefox/{firefox}"
+    )
+
+    macos_chrome = (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/{chrome} Safari/537.36"
+    )
+    macos_edge = (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/{edge} Safari/537.36 Edg/{edge}"
+    )
+    macos_firefox = (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:{firefox}) "
+        "Gecko/20100101 Firefox/{firefox}"
+    )
+    macos_safari = (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/605.1.15 (KHTML, like Gecko) "
+        "Version/{safari} Safari/605.1.15"
+    )
+
+    linux_chrome = (
+        "Mozilla/5.0 (X11; Linux x86_64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/{chrome} Safari/537.36"
+    )
+    linux_firefox = (
+        "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:{firefox}) "
+        "Gecko/20100101 Firefox/{firefox}"
+    )
+
+    android_chrome = (
+        "Mozilla/5.0 (Linux; Android {android}; {model}) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/{chrome} Mobile Safari/537.36"
+    )
+    android_firefox = (
+        "Mozilla/5.0 (Android {android}; Mobile; rv:{firefox}) "
+        "Gecko/{firefox} Firefox/{firefox}"
+    )
+
+    iphone_safari = (
+        "Mozilla/5.0 (iPhone; CPU iPhone OS {ios} like Mac OS X) "
+        "AppleWebKit/605.1.15 (KHTML, like Gecko) "
+        "Version/{safari} Mobile/15E148 Safari/604.1"
+    )
+    iphone_chrome = (
+        "Mozilla/5.0 (iPhone; CPU iPhone OS {ios} like Mac OS X) "
+        "AppleWebKit/605.1.15 (KHTML, like Gecko) "
+        "CriOS/{ios_chrome} Mobile/15E148 Safari/604.1"
+    )
+    ipad_safari = (
+        "Mozilla/5.0 (iPad; CPU OS {ios} like Mac OS X) "
+        "AppleWebKit/605.1.15 (KHTML, like Gecko) "
+        "Version/{safari} Mobile/15E148 Safari/604.1"
+    )
+
+    deviceList: List[DeviceInfo] = []
+
+    @classmethod
+    def __gen__(cls: Type[WebDevice]) -> None:
+
+        if len(cls.deviceList) != 0:
+            return
+
+        results: List[DeviceInfo] = []
+
+        def add(template: str, platform: str, **choices: List[str]) -> None:
+            keys = list(choices)
+            for values in itertools.product(*(choices[key] for key in keys)):
+                results.append(
+                    DeviceInfo(template.format(**dict(zip(keys, values))), platform)
+                )
+
+        add(cls.windows_chrome, "Win32", chrome=cls.chrome_ua_versions)
+        add(cls.windows_edge, "Win32", edge=cls.edge_ua_versions)
+        add(cls.windows_firefox, "Win32", firefox=cls.firefox_versions)
+
+        add(cls.macos_chrome, "MacIntel", chrome=cls.chrome_ua_versions)
+        add(cls.macos_edge, "MacIntel", edge=cls.edge_ua_versions)
+        add(cls.macos_firefox, "MacIntel", firefox=cls.firefox_versions)
+        add(cls.macos_safari, "MacIntel", safari=cls.safari_versions)
+
+        add(cls.linux_chrome, "Linux x86_64", chrome=cls.chrome_ua_versions)
+        add(cls.linux_firefox, "Linux x86_64", firefox=cls.firefox_versions)
+
+        for android, model in cls.android_devices:
+            for chrome in cls.android_chrome_versions:
+                results.append(
+                    DeviceInfo(
+                        cls.android_chrome.format(
+                            android=android, model=model, chrome=chrome
+                        ),
+                        "Linux armv8l",
+                    )
+                )
+
+        for android in sorted({device[0] for device in cls.android_devices}):
+            for firefox in cls.android_firefox_versions:
+                results.append(
+                    DeviceInfo(
+                        cls.android_firefox.format(
+                            android=android, firefox=firefox
+                        ),
+                        "Linux armv8l",
+                    )
+                )
+
+        for ios, safari in cls.ios_versions:
+            results.append(
+                DeviceInfo(
+                    cls.iphone_safari.format(ios=ios, safari=safari), "iPhone"
+                )
+            )
+            results.append(
+                DeviceInfo(cls.ipad_safari.format(ios=ios, safari=safari), "MacIntel")
+            )
+            for ios_chrome in cls.ios_chrome_versions:
+                results.append(
+                    DeviceInfo(
+                        cls.iphone_chrome.format(ios=ios, ios_chrome=ios_chrome),
+                        "iPhone",
+                    )
+                )
+
+        cls.deviceList = results
